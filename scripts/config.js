@@ -16,10 +16,13 @@ const banner =
   ' */'
 
 const aliases = require('./alias')
+//将入口js所在的目录解析粗来然后再alias.js找到映射的目录，通过path.resolve找到src下实际的文件路径
+//例1：web/entry-runtime.ts
 const resolve = p => {
-  const base = p.split('/')[0]
+  const base = p.split('/')[0] //例1：base = web
   if (aliases[base]) {
-    return path.resolve(aliases[base], p.slice(base.length + 1))
+    //例1：aliases[base]: 'src/platforms/web'
+    return path.resolve(aliases[base], p.slice(base.length + 1)) //例1：'src/platforms/web/entry-runtime.ts'
   } else {
     return path.resolve(__dirname, '../', p)
   }
@@ -30,7 +33,6 @@ const resolve = p => {
 const consolidatePath = require.resolve('@vue/consolidate/package.json', {
   paths: [path.resolve(__dirname, '../packages/compiler-sfc')]
 })
-
 const builds = {
   // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
   'runtime-cjs-dev': {
@@ -301,5 +303,6 @@ if (process.env.TARGET) {
   module.exports = genConfig(process.env.TARGET)
 } else {
   exports.getBuild = genConfig
+  //build.js中的getAllBuilds
   exports.getAllBuilds = () => Object.keys(builds).map(genConfig)
 }

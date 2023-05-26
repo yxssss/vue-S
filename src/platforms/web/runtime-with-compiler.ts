@@ -1,7 +1,6 @@
 import config from 'core/config'
 import { warn, cached } from 'core/util/index'
 import { mark, measure } from 'core/util/perf'
-
 import Vue from './runtime/index'
 import { query } from './util/index'
 import { compileToFunctions } from './compiler/index'
@@ -11,7 +10,7 @@ import {
 } from './util/compat'
 import type { Component } from 'types/component'
 import type { GlobalAPI } from 'types/global-api'
-
+//Vue的原型挂载函数
 const idToTemplate = cached(id => {
   const el = query(id)
   return el && el.innerHTML

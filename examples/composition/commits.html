@@ -1,4 +1,4 @@
-<script src="../../dist/vue.min.js"></script>
+<script src="../../dist/vue.js"></script>
 
 <div id="demo">
   <h1>Latest Vue.js Commits</h1>
@@ -31,7 +31,6 @@ const truncate = v => {
 }
 
 const formatDate = v => v.replace(/T|Z/g, ' ')
-
 new Vue({
   setup() {
     const currentBranch = ref('main')

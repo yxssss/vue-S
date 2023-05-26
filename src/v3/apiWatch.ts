@@ -31,7 +31,6 @@ export type WatchCallback<V = any, OV = any> = (
   oldValue: OV,
   onCleanup: OnCleanup
 ) => any
-
 type MapSources<T, Immediate> = {
   [K in keyof T]: T[K] extends WatchSource<infer V>
     ? Immediate extends true

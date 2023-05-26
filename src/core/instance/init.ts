@@ -56,8 +56,9 @@ export function initMixin(Vue: typeof Component) {
     }
     // expose real self
     vm._self = vm
-    initLifecycle(vm)
-    initEvents(vm)
+    //beforeCreate前
+    initLifecycle(vm) //初始化生命周期变量
+    initEvents(vm) // vm.on vm.once vm.$emit
     initRender(vm)
     callHook(vm, 'beforeCreate', undefined, false /* setContext */)
     initInjections(vm) // resolve injections before data/props

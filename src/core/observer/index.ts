@@ -217,7 +217,9 @@ export function defineReactive(
  * triggers change notification if the property doesn't
  * already exist.
  */
+//数组
 export function set<T>(array: T[], key: number, value: T): T
+//对象
 export function set<T>(object: object, key: string | number, value: T): T
 export function set(
   target: any[] | Record<string, any>,
@@ -234,8 +236,11 @@ export function set(
     return
   }
   const ob = (target as any).__ob__
+  //如果是数组 且key合法数字
   if (isArray(target) && isValidArrayIndex(key)) {
+    //取最大长度
     target.length = Math.max(target.length, key)
+    //用splice方法双向绑定
     target.splice(key, 1, val)
     // when mocking for SSR, array methods are not hijacked
     if (ob && !ob.shallow && ob.mock) {

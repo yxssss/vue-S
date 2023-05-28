@@ -359,10 +359,11 @@ export function stateMixin(Vue: typeof Component) {
   }
   Object.defineProperty(Vue.prototype, '$data', dataDef)
   Object.defineProperty(Vue.prototype, '$props', propsDef)
-
+  //$set
   Vue.prototype.$set = set
+  //$delete
   Vue.prototype.$delete = del
-
+  //$watch
   Vue.prototype.$watch = function (
     expOrFn: string | (() => any),
     cb: any,

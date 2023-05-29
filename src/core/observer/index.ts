@@ -236,7 +236,7 @@ export function set(
     return
   }
   const ob = (target as any).__ob__
-  //如果是数组 且key合法数字
+  //如果是数组 且key合法数字1
   if (isArray(target) && isValidArrayIndex(key)) {
     //取最大长度
     target.length = Math.max(target.length, key)

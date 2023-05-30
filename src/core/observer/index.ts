@@ -226,6 +226,9 @@ export function set(
   key: any,
   val: any
 ): any {
+  //判断数据是否合规
+  //isUndef 是否为null或undefind
+  //isPrimitive 是否为[string,number,symbol,boolean]
   if (__DEV__ && (isUndef(target) || isPrimitive(target))) {
     warn(
       `Cannot set reactive property on undefined, null, or primitive value: ${target}`
@@ -236,7 +239,7 @@ export function set(
     return
   }
   const ob = (target as any).__ob__
-  //如果是数组 且key合法数字1
+  //如果是数组 且key合法数字
   if (isArray(target) && isValidArrayIndex(key)) {
     //取最大长度
     target.length = Math.max(target.length, key)
@@ -248,10 +251,12 @@ export function set(
     }
     return val
   }
+  //若key不是当前对象的key，或不是原型中的key，直接赋值
   if (key in target && !(key in Object.prototype)) {
     target[key] = val
     return val
   }
+
   if ((target as any)._isVue || (ob && ob.vmCount)) {
     __DEV__ &&
       warn(
@@ -260,10 +265,13 @@ export function set(
       )
     return val
   }
+  //当前对象不为响应式对象，不需要绑定，直接赋值
   if (!ob) {
     target[key] = val
     return val
   }
+  //给数据添加依赖，
+  //ob.dep.notify()触发依赖
   defineReactive(ob.value, key, val, undefined, ob.shallow, ob.mock)
   if (__DEV__) {
     ob.dep.notify({

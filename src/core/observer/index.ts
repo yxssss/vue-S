@@ -106,9 +106,11 @@ export function observe(
   shallow?: boolean,
   ssrMockReactivity?: boolean
 ): Observer | void {
+  //如果有__ob__属性，表示已经检测过，直接赋值
   if (value && hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     return value.__ob__
   }
+  //如果没有就创建Observer对象
   if (
     shouldObserve &&
     (ssrMockReactivity || !isServerRendering()) &&
@@ -133,8 +135,17 @@ export function defineReactive(
   shallow?: boolean,
   mock?: boolean
 ) {
+  //定义dep常量
   const dep = new Dep()
-
+  //Object.getOwnPropertyDescriptor
+  //let obj = {a:111,b:222}
+  //Object.getOwnPropertyDescriptor(obj, 'a')
+  //--------------------------------------
+  // configurable:true 当且仅当指定对象的属性描述可以被改变或者属性可被删除时，为 true
+  // enumerable:true 是否可枚举
+  // value:111 该属性的值
+  // writable:true 当且仅当属性的值可以被改变时为 true
+  //-----------------------------------------
   const property = Object.getOwnPropertyDescriptor(obj, key)
   if (property && property.configurable === false) {
     return
@@ -234,6 +245,7 @@ export function set(
       `Cannot set reactive property on undefined, null, or primitive value: ${target}`
     )
   }
+  //__v_isReadonly 可读不可写
   if (isReadonly(target)) {
     __DEV__ && warn(`Set operation on key "${key}" failed: target is readonly.`)
     return

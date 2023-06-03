@@ -96,9 +96,12 @@ export function renderMixin(Vue: typeof Component) {
   // install runtime convenience helpers
   installRenderHelpers(Vue.prototype)
 
+  //$nextTick
   Vue.prototype.$nextTick = function (fn: (...args: any[]) => any) {
+    //返回nextTick函数
     return nextTick(fn, this)
   }
+  //render
 
   Vue.prototype._render = function (): VNode {
     const vm: Component = this

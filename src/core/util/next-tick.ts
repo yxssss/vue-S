@@ -4,9 +4,12 @@ import { noop } from 'shared/util'
 import { handleError } from './error'
 import { isIE, isIOS, isNative } from './env'
 
+//是否正在使用微任务
 export let isUsingMicroTask = false
 
+//需要处理的事情队列
 const callbacks: Array<Function> = []
+//记录一个标记，如果已经有 timerFunc则不再推送
 let pending = false
 
 function flushCallbacks() {
@@ -38,6 +41,8 @@ let timerFunc
 // completely stops working after triggering a few times... so, if native
 // Promise is available, we will use it:
 /* istanbul ignore next, $flow-disable-line */
+//判断浏览器是否支持promise
+//顺序 promise => mutationOberserver => setImmediate => setTimeOut
 if (typeof Promise !== 'undefined' && isNative(Promise)) {
   const p = Promise.resolve()
   timerFunc = () => {
@@ -47,6 +52,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
     // microtask queue but the queue isn't being flushed, until the browser
     // needs to do some other work, e.g. handle a timer. Therefore we can
     // "force" the microtask queue to be flushed by adding an empty timer.
+    //在ios中添加空的定时器强制刷新任务队列
     if (isIOS) setTimeout(noop)
   }
   isUsingMicroTask = true

@@ -59,6 +59,7 @@ export function initLifecycle(vm: Component) {
 }
 
 export function lifecycleMixin(Vue: typeof Component) {
+  //update
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     const prevEl = vm.$el
@@ -96,14 +97,14 @@ export function lifecycleMixin(Vue: typeof Component) {
     // updated hook is called by the scheduler to ensure that children are
     // updated in a parent's updated hook.
   }
-
+  //forceUpdate
   Vue.prototype.$forceUpdate = function () {
     const vm: Component = this
     if (vm._watcher) {
       vm._watcher.update()
     }
   }
-
+  //destroy
   Vue.prototype.$destroy = function () {
     const vm: Component = this
     if (vm._isBeingDestroyed) {

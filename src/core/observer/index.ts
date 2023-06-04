@@ -106,9 +106,11 @@ export function observe(
   shallow?: boolean,
   ssrMockReactivity?: boolean
 ): Observer | void {
+  //如果有__ob__属性，表示已经检测过，直接赋值
   if (value && hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     return value.__ob__
   }
+  //如果没有就创建Observer对象
   if (
     shouldObserve &&
     (ssrMockReactivity || !isServerRendering()) &&
@@ -133,8 +135,17 @@ export function defineReactive(
   shallow?: boolean,
   mock?: boolean
 ) {
+  //定义dep常量
   const dep = new Dep()
-
+  //Object.getOwnPropertyDescriptor
+  //let obj = {a:111,b:222}
+  //Object.getOwnPropertyDescriptor(obj, 'a')
+  //--------------------------------------
+  // configurable:true 当且仅当指定对象的属性描述可以被改变或者属性可被删除时，为 true
+  // enumerable:true 是否可枚举
+  // value:111 该属性的值
+  // writable:true 当且仅当属性的值可以被改变时为 true
+  //-----------------------------------------
   const property = Object.getOwnPropertyDescriptor(obj, key)
   if (property && property.configurable === false) {
     return
@@ -217,25 +228,34 @@ export function defineReactive(
  * triggers change notification if the property doesn't
  * already exist.
  */
+//数组
 export function set<T>(array: T[], key: number, value: T): T
+//对象
 export function set<T>(object: object, key: string | number, value: T): T
 export function set(
   target: any[] | Record<string, any>,
   key: any,
   val: any
 ): any {
+  //判断数据是否合规
+  //isUndef 是否为null或undefind
+  //isPrimitive 是否为[string,number,symbol,boolean]
   if (__DEV__ && (isUndef(target) || isPrimitive(target))) {
     warn(
       `Cannot set reactive property on undefined, null, or primitive value: ${target}`
     )
   }
+  //__v_isReadonly 可读不可写
   if (isReadonly(target)) {
     __DEV__ && warn(`Set operation on key "${key}" failed: target is readonly.`)
     return
   }
   const ob = (target as any).__ob__
+  //如果是数组 且key合法数字
   if (isArray(target) && isValidArrayIndex(key)) {
+    //取最大长度
     target.length = Math.max(target.length, key)
+    //用splice方法双向绑定
     target.splice(key, 1, val)
     // when mocking for SSR, array methods are not hijacked
     if (ob && !ob.shallow && ob.mock) {
@@ -243,10 +263,12 @@ export function set(
     }
     return val
   }
+  //若key不是当前对象的key，或不是原型中的key，直接赋值
   if (key in target && !(key in Object.prototype)) {
     target[key] = val
     return val
   }
+
   if ((target as any)._isVue || (ob && ob.vmCount)) {
     __DEV__ &&
       warn(
@@ -255,10 +277,13 @@ export function set(
       )
     return val
   }
+  //当前对象不为响应式对象，不需要绑定，直接赋值
   if (!ob) {
     target[key] = val
     return val
   }
+  //给数据添加依赖，
+  //ob.dep.notify()触发依赖
   defineReactive(ob.value, key, val, undefined, ob.shallow, ob.mock)
   if (__DEV__) {
     ob.dep.notify({

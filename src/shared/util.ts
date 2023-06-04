@@ -71,7 +71,10 @@ export function isRegExp(v: any): v is RegExp {
  * Check if val is a valid array index.
  */
 export function isValidArrayIndex(val: any): boolean {
+  //转数字
   const n = parseFloat(String(val))
+  // isFinite  函数用于检查其参数是否是无穷大，也可以理解为是否为一个有限数值（finite number）。
+  //即对浮点数向下取整
   return n >= 0 && Math.floor(n) === n && isFinite(val)
 }
 
